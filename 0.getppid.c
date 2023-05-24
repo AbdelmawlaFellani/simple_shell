@@ -6,9 +6,10 @@
  *
  * Return: 0 (Success)
  */
-int main()
+int main(void)
 {
 	pid_t ppid, pid;
+
 	pid = getpid();
 	ppid = getppid();
 	printf("pid =%d\nppid =%d\n", pid, ppid);
