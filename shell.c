@@ -5,7 +5,12 @@
 #include <string.h>
 
 #define CAPACITY 1024
-int main()
+/**
+ * main - Entry Point
+ *
+ * Return: 0 (Success)
+ */
+int main(void)
 {
 	char *buff = NULL, *token, **arr_tokens;
 	size_t buff_size = 0;
@@ -36,5 +41,6 @@ int main()
 			wait(&status);
 		i = 0;
 		free(arr_tokens);
+		return (0);
 	}
 }
