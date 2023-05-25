@@ -23,7 +23,10 @@ int main(void)
 		write(1, "$ ", 2);
 		nread = getline(&buff, &buff_size, stdin);
 		if (nread == EOF)
+		{
 			perror("getline");
+			break;
+		}
 		arr_tokens = malloc(sizeof(char *) * CAPACITY);
 		token = strtok(buff, delim);
 		while (token)
