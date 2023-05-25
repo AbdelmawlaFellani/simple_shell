@@ -26,9 +26,9 @@ int main(int argc, char *argv[], char *env[])
 			perror("getline");
 			break;
 		}
-		else if (nread == 1)
-			continue;
 		command[nread - 1] = '\0';
+		if (strcmp(command, "exit") == 0)
+			break;
 		pid = fork();
 		if (pid == -1)
 		{
