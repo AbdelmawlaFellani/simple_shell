@@ -1,12 +1,14 @@
 #include "main.h"
 #define MAX_COMMAND_LENGTH 100
-
 /**
  * main - Entry Point
  *
+ * @argc: Argument counter
+ * @argv: Argument vector
+ * @env: environment variables
  * Return: 0 (Success)
  */
-int main(void)
+int main(int argc, char *argv[], char *env[])
 {
 	char *command = NULL, *args[2];
 	size_t command_size = 0;
@@ -14,6 +16,7 @@ int main(void)
 	int status;
 	pid_t pid;
 
+	(void) argc;
 	while (1)
 	{
 		write(STDOUT_FILENO, "$ ", 2);
@@ -34,10 +37,8 @@ int main(void)
 		}
 		else if (pid == 0)
 		{
-			args[0] = command;
-			args[1] = NULL;
-
-			if (execve(command, args, NULL) == -1)
+			argv[0] = command;
+			if (execve(argv[0], argv, env) == -1)
 			{
 				fprintf(stderr, "%s: command not found\n", command);
 				exit(EXIT_FAILURE);
