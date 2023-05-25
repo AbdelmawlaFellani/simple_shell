@@ -1,5 +1,6 @@
 #include "main.h"
-#define CAPACITY 1024
+#define MAX_COMMAND_LENGTH 100
+
 /**
  * main - Entry Point
  *
@@ -7,44 +8,42 @@
  */
 int main(void)
 {
-	char *buff = NULL, *token, **arr_tokens;
-	size_t buff_size = 0;
-	int nread, status, i = 0;
+	char command[MAX_COMMAND_LENGTH], *args[MAX_COMMAND_LENGTH];
+	int status;
 	pid_t pid;
-	char delim[] = " \t\n";
 
 	while (1)
 	{
-		write(1, "$ ", 2);
-		nread = getline(&buff, &buff_size, stdin);
-		if (nread == EOF)
+		printf("$ "), fflush(stdout);
+		if (fgets(command, sizeof(command), stdin) == NULL)
 		{
-			perror("getline");
-			break;
+			if (!feof(stdin))
+			{
+				perror("fgets");
+				continue;
+			}
+			else
+				break;
 		}
-		if (buff[0] == '\n')
+		command[strcspn(command, "\n")] = '\0';
+		pid = fork();
+		if (pid < 0)
+		{
+			perror("fork");
 			continue;
-		arr_tokens = malloc(sizeof(char *) * (i + 1));
-		if (arr_tokens == NULL)
-			perror("malloc"), exit(EXIT_FAILURE);
-		token = strtok(buff, delim);
-		while (token)
-		{
-			arr_tokens[i] = token;
-			token = strtok(NULL, delim);
-			i++;
 		}
-		arr_tokens[i] = NULL, pid = fork();
-		if (pid == 0)
+		else if (pid == 0)
 		{
-			if (execve(arr_tokens[0], arr_tokens, NULL) == -1)
-				perror("execve"), exit(EXIT_FAILURE);
+			args[0] = command;
+			args[1] = NULL;
+			if (execvp(args[0], args) == -1)
+			{
+				fprintf(stderr, "%s: command not found\n", command);
+				exit(EXIT_FAILURE);
+			}
 		}
 		else
-			wait(&status);
-		i = 0;
-		free(arr_tokens);
+			waitpid(pid, &status, 0);
 	}
-	free(buff);
 	return (0);
 }
