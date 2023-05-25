@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <string.h>
-
+#include "main.h"
 #define CAPACITY 1024
 /**
  * main - Entry Point
@@ -27,7 +22,11 @@ int main(void)
 			perror("getline");
 			break;
 		}
-		arr_tokens = malloc(sizeof(char *) * CAPACITY);
+		if (buff[0] == '\n')
+			continue;
+		arr_tokens = malloc(sizeof(char *) * (i + 1));
+		if (arr_tokens == NULL)
+			perror("malloc"), exit(EXIT_FAILURE);
 		token = strtok(buff, delim);
 		while (token)
 		{
@@ -35,17 +34,17 @@ int main(void)
 			token = strtok(NULL, delim);
 			i++;
 		}
-		arr_tokens[i] = NULL;
-		pid = fork();
+		arr_tokens[i] = NULL, pid = fork();
 		if (pid == 0)
 		{
 			if (execve(arr_tokens[0], arr_tokens, NULL) == -1)
-				perror("exceve");
+				perror("execve"), exit(EXIT_FAILURE);
 		}
 		else
 			wait(&status);
 		i = 0;
 		free(arr_tokens);
 	}
+	free(buff);
 	return (0);
 }

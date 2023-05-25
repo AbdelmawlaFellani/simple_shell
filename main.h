@@ -11,4 +11,5 @@
 #include <fcntl.h>
 #include <errno.h>
 
+char **_splitstr(char *str);
 #endif
