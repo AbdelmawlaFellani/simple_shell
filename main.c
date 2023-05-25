@@ -23,16 +23,16 @@ int main(int argc, char *argv[], char *env[])
 		nread = getline(&command, &command_size, stdin);
 		if (nread == -1)
 		{
-			perror("getline");
+			perror("./shell");
 			break;
 		}
+		else if (nread == 1)
+			continue;
 		command[nread - 1] = '\0';
-		if (strcmp(command, "exit") == 0)
-			break;
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("fork");
+			perror("./shell");
 			continue;
 		}
 		else if (pid == 0)
@@ -40,7 +40,7 @@ int main(int argc, char *argv[], char *env[])
 			argv[0] = command;
 			if (execve(argv[0], argv, env) == -1)
 			{
-				fprintf(stderr, "%s: command not found\n", command);
+				fprintf(stderr, "./shell: No such file or directory\n");
 				exit(EXIT_FAILURE);
 			}
 		}
