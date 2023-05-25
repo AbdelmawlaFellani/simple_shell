@@ -40,11 +40,11 @@ char **_splitstr(char *str)
 		token_count++;
 		token = strtok(NULL, delim);
 	}
-	for (int i = 0; i < token_count; i++)
+	for (i = 0; i < token_count; i++)
 	{
 		printf("Token %d: %s\n", i + 1, arr_tokens[i]);
 	}
-	for (int i = 0; i < token_count; i++)
+	for (i = 0; i < token_count; i++)
 	{
 		free(arr_tokens[i]);
 	}
@@ -59,11 +59,11 @@ char **_splitstr(char *str)
  *
  * Return: 0 (Success)
  */
-int main(int ac, char **av)
+int main(void)
 {
-	char *buffer = NULL, **tokens;
+	char *buffer = NULL, **tokens = NULL;
 	size_t size_buffer = 0;
-	size_t nread = 0;
+	int nread = 0;
 
 	write(1, "$ ", 2);
 	nread = getline(&buffer, &size_buffer, stdin);
@@ -71,7 +71,7 @@ int main(int ac, char **av)
 	if (nread == -1)
 		perror("getline");
 	printf("%s", buffer);
-
-	tokens = _splitstr(buffer);
+	if (tokens == NULL)
+		tokens = _splitstr(buffer);
 	return (0);
 }

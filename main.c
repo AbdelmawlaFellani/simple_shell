@@ -22,6 +22,8 @@ int main(void)
 	{
 		write(1, "$ ", 2);
 		nread = getline(&buff, &buff_size, stdin);
+		if (nread == EOF)
+			perror("getline");
 		arr_tokens = malloc(sizeof(char *) * CAPACITY);
 		token = strtok(buff, delim);
 		while (token)
@@ -41,6 +43,6 @@ int main(void)
 			wait(&status);
 		i = 0;
 		free(arr_tokens);
-		return (0);
 	}
+	return (0);
 }
