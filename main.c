@@ -10,7 +10,7 @@
  */
 int main(int argc, char *argv[], char *env[])
 {
-	char *command = NULL, *args[2];
+	char *command = NULL;
 	size_t command_size = 0;
 	ssize_t nread;
 	int status;
