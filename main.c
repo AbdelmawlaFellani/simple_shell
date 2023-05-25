@@ -8,26 +8,26 @@
  */
 int main(void)
 {
-	char command[MAX_COMMAND_LENGTH], *args[MAX_COMMAND_LENGTH];
+	char *command = NULL, *args[2];
+	size_t command_size = 0;
+	ssize_t nread;
 	int status;
 	pid_t pid;
 
 	while (1)
 	{
-		printf("$ "), fflush(stdout);
-		if (fgets(command, sizeof(command), stdin) == NULL)
+		write(STDOUT_FILENO, "$ ", 2);
+		nread = getline(&command, &command_size, stdin);
+		if (nread == -1)
 		{
-			if (!feof(stdin))
-			{
-				perror("fgets");
-				continue;
-			}
-			else
-				break;
+			perror("getline");
+			break;
 		}
-		command[strcspn(command, "\n")] = '\0';
+		else if (nread == 1)
+			continue;
+		command[nread - 1] = '\0';
 		pid = fork();
-		if (pid < 0)
+		if (pid == -1)
 		{
 			perror("fork");
 			continue;
@@ -36,7 +36,8 @@ int main(void)
 		{
 			args[0] = command;
 			args[1] = NULL;
-			if (execvp(args[0], args) == -1)
+
+			if (execve(command, args, NULL) == -1)
 			{
 				fprintf(stderr, "%s: command not found\n", command);
 				exit(EXIT_FAILURE);
@@ -45,5 +46,6 @@ int main(void)
 		else
 			waitpid(pid, &status, 0);
 	}
+	free(command);
 	return (0);
 }
