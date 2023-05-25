@@ -13,5 +13,10 @@
 #include <fcntl.h>
 #include <errno.h>
 
-char **_splitstr(char *str);
+extern char **environ;
+char **_splitstr(char *str, char delim[]);
+char *_getcmd(char *cmd);
+void _cmdcheck(char *command);
+char *_getenv(const char *name);
+
 #endif
