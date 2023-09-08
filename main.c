@@ -1,93 +1,52 @@
 #include "main.h"
-
+#define MAX_COMMAND_LENGTH 100
 /**
- * init_shell - Initialize the shell struct
- * @argc: argument counter.
- * @argv: An array of command arguments.
- * @shell: A pointer to the Shell struct to be initialized
- */
-void init_shell(Shell *shell, int argc, char **argv, char **env)
-{
-	shell->run = 1;
-	shell->argc = argc;
-	shell->argv = argv;
-	shell->command = NULL;
-	shell->command_size = 0;
-	shell->status = 0;
-	shell->input = NULL;
-	shell->env_cpy = env;
-}
-
-/**
- * run_shell - Run the main shell loop
+ * main - Entry Point
  *
- * @shell: A pointer to the Shell struct representing the shell.
- * @argv: An array of command arguments.
- * @env: An array of environment variables.
+ * @argc: Argument counter
+ * @argv: Argument vector
+ * @env: environment variables
+ * Return: 0 (Success)
  */
-void run_shell(Shell *shell)
+int main(int argc, char *argv[], char *env[])
 {
+	char *command = NULL;
+	size_t command_size = 0;
 	ssize_t nread;
+	int status;
 	pid_t pid;
 
+	(void) argc;
 	while (1)
 	{
-		print_prompt();
-		nread = read_command(shell);
+		write(STDOUT_FILENO, "$ ", 2);
+		nread = getline(&command, &command_size, stdin);
 		if (nread == -1)
+		{
+			perror("./shell");
 			break;
-
+		}
+		else if (nread == 1)
+			continue;
+		command[nread - 1] = '\0';
 		pid = fork();
-
 		if (pid == -1)
 		{
-			perror("fork");
+			perror("./shell");
 			continue;
 		}
 		else if (pid == 0)
 		{
-			shell->argv[0] = shell->command;
-			if (execve(shell->argv[0], shell->argv, shell->env_cpy) == -1)
+			argv[0] = command;
+			if (execve(argv[0], argv, env) == -1)
 			{
-				perror("execve");
+				fprintf(stderr, "./shell: No such file or directory\n");
 				exit(EXIT_FAILURE);
 			}
 		}
 		else
-		{
-			waitpid(pid, &(shell->status), 0);
-		}
+			waitpid(pid, &status, 0);
 	}
-}
-
-/**
- * free_shell - Free memory associated with a Shell struct.
- *
- * @shell: A pointer to the Shell struct to be freed.
- */
-void free_shell(Shell *shell)
-{
-	free(shell->command);
-}
-/**
- * main - entry point
- *
- * @argc: argument counter
- * @argv: argument vector
- * @env: environement
- *
- * Return: Always (0)
- */
-int main(int argc, char *argv[], char **env)
-{
-	Shell sh;
-	(void)argc;
-
-	init_shell(&sh, argc, argv, env);
-
-	run_shell(&sh);
-
-	free_shell(&sh);
-
+	free(command);
 	return (0);
 }
