@@ -9,8 +9,6 @@
  * execute_command - Execute a user command.
  *
  * @shell: The Shell
- * @argv: An array of command arguments.
- * @env: An array of environment variables.
  *
  * This function takes a user command, an array of arguments, and an array of
  * environment variables. It attempts to execute the command using the execve
@@ -18,10 +16,10 @@
  */
 void execute_command(Shell *shell)
 {
-	if (execve(shell->command, shell->argv, shell->env_cpy) == -1)
+	if (execve(shell->args[0], shell->args, shell->env_cpy) == -1)
 	{
 		perror("execve");
-		fprintf(stderr, "%s: not found\n", shell->command);
+		fprintf(stderr, "%s: not found\n", shell->args[0]);
 		exit(EXIT_FAILURE);
 	}
 }

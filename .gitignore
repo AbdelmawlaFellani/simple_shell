@@ -5,3 +5,5 @@ bin_ls_3_times.bash:Zone.Identifier
 bin_ls_spaces.bash:Zone.Identifier 
 bin_ls_spaces.bash
 *.out
+bin_ls.bash:Zone.Identifier
+checker.bash:Zone.Identifier

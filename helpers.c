@@ -13,7 +13,7 @@
 char **_splitstr(char *str, char delim[])
 {
 	char *token, **arr_tokens = NULL;
-	int token_count = 0, capacity = 0, i;
+	int token_count = 0, capacity = 0;
 
 	token = strtok(str, delim);
 	while (token != NULL)
@@ -38,15 +38,6 @@ char **_splitstr(char *str, char delim[])
 		token_count++;
 		token = strtok(NULL, delim);
 	}
-	for (i = 0; i < token_count; i++)
-	{
-		printf("Token %d: %s\n", i + 1, arr_tokens[i]);
-	}
-	for (i = 0; i < token_count; i++)
-	{
-		free(arr_tokens[i]);
-	}
-	free(arr_tokens);
 	return (arr_tokens);
 }
 /**

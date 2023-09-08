@@ -21,15 +21,13 @@ void init_shell(Shell *shell, int argc, char **argv, char **env)
 	shell->input = NULL;
 	shell->env_cpy = env;
 
-	sh->interactive = isatty(STDIN_FILENO) && argc == 1;
+	shell->interactive = isatty(STDIN_FILENO) && argc == 1;
 }
 
 /**
  * run_shell - Run the main shell loop
  *
  * @shell: A pointer to the Shell struct representing the shell.]
- * @argv: An array of command arguments.
- * @env: An array of environment variables.
  *
  * Return: void
  */
@@ -40,7 +38,7 @@ void run_shell(Shell *shell)
 
 	while (shell->run)
 	{
-		print_prompt(shell);;
+		print_prompt(shell);
 		nread = read_command(shell);
 		if (nread == -1)
 			break;
@@ -54,7 +52,6 @@ void run_shell(Shell *shell)
 		}
 		else if (pid == 0)
 		{
-			shell->argv[0] = shell->command;
 			execute_command(shell);
 		}
 		else

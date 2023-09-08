@@ -29,6 +29,12 @@ ssize_t read_command(Shell *shell)
 		if (shell->command[nread - 1] == '\n')
 		{
 			shell->command[nread - 1] = '\0';
+			shell->args = _splitstr(shell->command, " ");
+			if (shell->args == NULL)
+			{
+				perror("splitstr");
+				return (-1);
+			}		
 		}
 	}
 	return (nread);
@@ -37,11 +43,13 @@ ssize_t read_command(Shell *shell)
 /**
  * print_prompt - Display the shell prompt.
  *
+ * @shell: A pointer to a Shell struct for storing the command.
+ *
  * This function displays a shell prompt, typically "$ ", to indicate that
  * the shell is ready to accept a user command.
  */
 void print_prompt(Shell *shell)
 {
-	if (shell.interactive)
+	if (shell->interactive)
 		write(STDOUT_FILENO, "$ ", 2);
 }
