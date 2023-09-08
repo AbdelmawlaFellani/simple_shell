@@ -1,3 +1,3 @@
 # Simple Shell Project
 ## Collaborators
-This is a Project Realized by David Oyebode and Abdelmawla Fellani (Me).
+This is a Project Realized by  and Abdelmawla Fellani (Me).
