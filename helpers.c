@@ -38,6 +38,7 @@ char **_splitstr(char *str, char delim[])
 		token_count++;
 		token = strtok(NULL, delim);
 	}
+	arr_tokens[token_count] = NULL;
 	return (arr_tokens);
 }
 /**

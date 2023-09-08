@@ -68,7 +68,11 @@ void run_shell(Shell *shell)
  */
 void free_shell(Shell *shell)
 {
-	free(shell->command);
+	if(shell->command)
+		free(shell->command);
+
+	if (shell->args)
+		free_string_array(&shell->args);
 }
 /**
  * main - entry point

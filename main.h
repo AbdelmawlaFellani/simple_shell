@@ -36,6 +36,8 @@ void print_prompt();
 
 /* execution.h */
 void execute_command(Shell *shell);
+/* utils */
+void free_string_array(char ***ptr);
 
 extern char **environ;
 char **_splitstr(char *str, char delim[]);

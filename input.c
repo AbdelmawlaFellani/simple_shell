@@ -16,12 +16,13 @@
  */
 ssize_t read_command(Shell *shell)
 {
+	size_t cmd_len = 0;
 	ssize_t nread;
 
-	nread =	getline(&shell->command, &(shell->command_size), stdin);
+	nread =	getline(&shell->command, &cmd_len, stdin);
 	if (nread == -1)
 	{
-		perror("read_command");
+		shell->run = 0;
 		return (-1);
 	}
 	else if (nread > 1)
