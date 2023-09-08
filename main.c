@@ -23,7 +23,7 @@ int main(int argc, char *argv[], char *env[])
 		nread = getline(&command, &command_size, stdin);
 		if (nread == -1)
 		{
-			perror("./shell");
+			perror("getline");
 			break;
 		}
 		else if (nread == 1)
@@ -32,7 +32,7 @@ int main(int argc, char *argv[], char *env[])
 		pid = fork();
 		if (pid == -1)
 		{
-			perror("./shell");
+			perror("fork");
 			continue;
 		}
 		else if (pid == 0)
