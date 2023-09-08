@@ -24,9 +24,13 @@ ssize_t read_command(Shell *shell)
 		perror("read_command");
 		return (-1);
 	}
-	else if (nread == 1)
-		shell->command[nread - 1] = '\0';
-
+	else if (nread > 1)
+	{
+		if (shell->command[nread - 1] == '\n')
+		{
+			shell->command[nread - 1] = '\0';
+		}
+	}
 	return (nread);
 }
 
@@ -36,8 +40,8 @@ ssize_t read_command(Shell *shell)
  * This function displays a shell prompt, typically "$ ", to indicate that
  * the shell is ready to accept a user command.
  */
-void print_prompt(void)
+void print_prompt(Shell *shell)
 {
-	if (isatty(STDIN_FILENO))
+	if (shell.interactive)
 		write(STDOUT_FILENO, "$ ", 2);
 }

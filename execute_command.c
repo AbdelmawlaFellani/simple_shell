@@ -18,11 +18,10 @@
  */
 void execute_command(Shell *shell)
 {
-	if (execve(shell->argv[0], shell->argv, shell->env_cpy) == -1)
+	if (execve(shell->command, shell->argv, shell->env_cpy) == -1)
 	{
 		perror("execve");
-		fprintf(stderr, "%s: %s", shell->argv[0], shell->command);
+		fprintf(stderr, "%s: not found\n", shell->command);
 		exit(EXIT_FAILURE);
 	}
-
 }
