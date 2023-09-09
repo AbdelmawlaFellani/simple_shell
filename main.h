@@ -40,7 +40,7 @@ void execute_command(Shell *shell);
 void free_string_array(char ***ptr);
 
 extern char **environ;
-char **_splitstr(char *str, char delim[]);
+char **_splitstr(char *cmd);
 char *_getcmd(char *cmd);
 void _cmdcheck(char *command);
 char *_getenv(const char *name);

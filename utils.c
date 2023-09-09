@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * free_double - Frees a double pointer
+ * free_string_array - Frees a double pointer
  * @ptr: The double pointer to be freed
  */
 void free_string_array(char ***ptr)

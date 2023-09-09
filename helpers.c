@@ -5,41 +5,41 @@
 /**
  * _splitstr - Splits the string provided into an array of strings.
  *
- * @str: The string to be split.
- * @delim: The delimiter used for splitting the string.
+ * @cmd: The string to be split.
  *
  * Return: An array of strings.
  */
-char **_splitstr(char *str, char delim[])
-{
-	char *token, **arr_tokens = NULL;
-	int token_count = 0, capacity = 0;
+char **_splitstr(char *cmd) {
+    char **tokens = NULL;
+    char *token;
+    int token_count = 0;
 
-	token = strtok(str, delim);
-	while (token != NULL)
-	{
-		if (token_count >= capacity)
-		{
-			capacity += INCRE_CAPACITY;
-			arr_tokens = realloc(arr_tokens, capacity * sizeof(char *));
-			if (arr_tokens == NULL)
-			{
-				printf("Memory allocation error.\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		arr_tokens[token_count] = malloc(sizeof(char) * (strlen(token) + 1));
-		if (arr_tokens[token_count] == NULL)
-		{
-			printf("Memory Allocation error.\n");
-			exit(EXIT_FAILURE);
-		}
-		strcpy(arr_tokens[token_count], token);
-		token_count++;
-		token = strtok(NULL, delim);
-	}
-	arr_tokens[token_count] = NULL;
-	return (arr_tokens);
+    token = strtok(cmd, " ");
+    while (token != NULL) {
+        tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
+        if (tokens == NULL) {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+
+        tokens[token_count] = strdup(token);
+        if (tokens[token_count] == NULL) {
+            perror("Memory allocation error");
+            exit(EXIT_FAILURE);
+        }
+
+        token_count++;
+        token = strtok(NULL, " ");
+    }
+
+    tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
+    if (tokens == NULL) {
+        perror("Memory allocation error");
+        exit(EXIT_FAILURE);
+    }
+    tokens[token_count] = NULL;
+
+    return tokens;
 }
 /**
  * _getenv - Gets the value of an environment variable.

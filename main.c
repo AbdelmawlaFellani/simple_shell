@@ -41,8 +41,9 @@ void run_shell(Shell *shell)
 		print_prompt(shell);
 		nread = read_command(shell);
 		if (nread == -1)
+		{
 			break;
-
+		}	
 		pid = fork();
 
 		if (pid == -1)
@@ -51,8 +52,13 @@ void run_shell(Shell *shell)
 			continue;
 		}
 		else if (pid == 0)
-		{
-			execute_command(shell);
+		{	
+			if (shell->args[0] == NULL || strcmp(shell->args[0], "") == 0)
+			{
+				continue;
+			}
+			else
+				execute_command(shell);
 		}
 		else
 		{
@@ -68,7 +74,7 @@ void run_shell(Shell *shell)
  */
 void free_shell(Shell *shell)
 {
-	if(shell->command)
+	if (shell->command)
 		free(shell->command);
 
 	if (shell->args)
