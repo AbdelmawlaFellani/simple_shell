@@ -1,9 +1,51 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <errno.h>
+
+/**
+ * find_full_cmd_path - Find the full path to a command in the PATH environment
+ *
+ * @command: The command to search for.
+ * @path_env: The PATH environment variable.
+ *
+ * Return: The full path to the command if found, or NULL if not found.
+ */
+char *find_full_cmd_path(const char *command, const char *path_env)
+{
+	char *token, *full_path;
+
+	if (path_env == NULL)
+		return (NULL);
+
+	token = strtok((char *)path_env, ":");
+	while (token != NULL)
+	{
+		full_path = malloc(strlen(token) + strlen(command) + 2);
+		if (full_path == NULL)
+		{
+			perror("malloc");
+			exit(EXIT_FAILURE);
+		}
+
+		strcpy(full_path, token);
+		strcat(full_path, "/");
+		strcat(full_path, command);
+
+		if (access(full_path, X_OK) == 0)
+		{
+			return (full_path);
+		}
+		if (access(full_path, X_OK) == -1)
+		{
+			if (errno == EACCES)
+				exit(126);
+			if (errno == ENOENT)
+				exit(127);
+		} 
+		free(full_path);
+		token = strtok(NULL, ":");
+	}
+
+	return (NULL); 
+}
 
 /**
  * execute_command - Execute a user command.
@@ -16,10 +58,27 @@
  */
 void execute_command(Shell *shell)
 {
-	if (execve(shell->args[0], shell->args, shell->env_cpy) == -1)
+	char *full_path;
+
+	if (shell->args[0][0] == '/' || shell->args[0][0] == '.')
 	{
-		perror("execve");
-		fprintf(stderr, "%s: not found\n", shell->args[0]);
+		full_path = strdup(shell->args[0]);
+	}
+	else
+	{
+		full_path = find_full_cmd_path(shell->args[0], _getenv("PATH"));
+		if (full_path == NULL)
+		{
+			fprintf(stderr, "%s: %s: command not found\n",
+					shell->argv[0], shell->args[0]);
+			exit(EXIT_FAILURE);
+		}
+	}
+	if (execve(full_path, shell->args, shell->env_cpy) == -1)
+	{
+		fprintf(stderr, "%s: %d: %s: %s", shell->argv[0], 1,
+				shell->args[0], "not found\n");
 		exit(EXIT_FAILURE);
 	}
+	free(full_path);
 }

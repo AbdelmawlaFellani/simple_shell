@@ -4,23 +4,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <strings.h>
-/*
-char *remove_space(char *cmd)
-{
-    int i, j;
-
-    for (i = 0, j = 0; cmd[i] != '\0'; i++) {
-        if (cmd[i] != ' ') {
-            cmd[j] = cmd[i];
-            j++;
-        }
-    }
-
-    cmd[j] = '\0';
-
-    return (cmd);
-}
-*/
 
 /**
  * read_command - Read a user command from standard input.
@@ -34,36 +17,29 @@ char *remove_space(char *cmd)
  */
 ssize_t read_command(Shell *shell)
 {
-        size_t cmd_len = 0;
-        ssize_t nread;
+	size_t cmd_len = 0;
+	ssize_t nread;
 
-        nread = getline(&shell->command, &cmd_len, stdin);
-        if (nread == -1)
-        {
-                shell->run = 0;
-                return (-1);
-        }
-        else if (nread > 1)
-        {
-                if (shell->command[nread - 1] == '\n')
-                {
-                        shell->command[nread - 1] = '\0';
-                        shell->args = _splitstr(shell->command);
-			/*
-			if (strcmp(shell->args, "\n") == 0)
+	nread = getline(&shell->command, &cmd_len, stdin);
+	if (nread == -1)
+	{
+		shell->run = 0;
+		return (-1);
+	}
+	else if (nread > 1)
+	{
+		if (shell->command[nread - 1] == '\n')
+		{
+			shell->command[nread - 1] = '\0';
+			shell->args = _splitstr(shell->command);
+			if (shell->args == NULL)
 			{
-				print_prompt();
-				read_command(shell);
+				perror("splitstr");
+				return (-1);
 			}
-		       	*/
-                        if (shell->args == NULL)
-                        {
-                                perror("splitstr");
-                                return (-1);
-                        }
-                }
-        }
-        return (nread);
+		}
+	}
+	return (nread);
 }
 /**
  * print_prompt - Display the shell prompt.

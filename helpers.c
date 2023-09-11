@@ -9,46 +9,53 @@
  *
  * Return: An array of strings.
  */
-char **_splitstr(char *cmd) {
-    char **tokens = NULL;
-    char *token;
-    int token_count = 0;
+char **_splitstr(char *cmd)
+{
+	char **tokens = NULL;
+	char *token;
+	int token_count = 0;
 
-    token = strtok(cmd, " ");
-    while (token != NULL) {
-        tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
-        if (tokens == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
+	token = strtok(cmd, " ");
+	while (token != NULL)
+	{
+		tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
 
-        tokens[token_count] = strdup(token);
-        if (tokens[token_count] == NULL) {
-            perror("Memory allocation error");
-            exit(EXIT_FAILURE);
-        }
+		if (tokens == NULL)
+		{
+			perror("Memory allocation error");
+			exit(EXIT_FAILURE);
+		}
 
-        token_count++;
-        token = strtok(NULL, " ");
-    }
+		tokens[token_count] = strdup(token);
 
-    tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
-    if (tokens == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-    tokens[token_count] = NULL;
+		if (tokens[token_count] == NULL)
+		{
+			perror("Memory allocation error");
+			exit(EXIT_FAILURE);
+		}
 
-    return tokens;
+		token_count++;
+		token = strtok(NULL, " ");
+	}
+
+	tokens = realloc(tokens, (token_count + 1) * sizeof(char *));
+	if (tokens == NULL)
+	{
+		perror("Memory allocation error");
+		exit(EXIT_FAILURE);
+	}
+	tokens[token_count] = NULL;
+
+	return (tokens);
 }
 /**
- * _getenv - Gets the value of an environment variable.
+ * __getenv - Gets the value of an environment variable.
  *
  * @name: The name of the environment variable.
  *
  * Return: The value of the environment variable, or NULL if not found.
  */
-char *_getenv(const char *name)
+char *__getenv(const char *name)
 {
 	int idx = 0;
 	char *key;

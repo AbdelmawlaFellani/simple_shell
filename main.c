@@ -43,7 +43,7 @@ void run_shell(Shell *shell)
 		if (nread == -1)
 		{
 			break;
-		}	
+		}
 		pid = fork();
 
 		if (pid == -1)
@@ -52,8 +52,9 @@ void run_shell(Shell *shell)
 			continue;
 		}
 		else if (pid == 0)
-		{	
-			if (shell->args[0] == NULL || strcmp(shell->args[0], "") == 0)
+		{
+			if (shell->args[0] == NULL
+				       	|| strcmp(shell->args[0], "\0") == 0)
 			{
 				continue;
 			}
@@ -62,7 +63,7 @@ void run_shell(Shell *shell)
 		}
 		else
 		{
-			waitpid(pid, &(shell->status), 0);
+			waitpid(pid, &shell->status, 0);
 		}
 	}
 }
@@ -92,6 +93,25 @@ void free_shell(Shell *shell)
 int main(int argc, char *argv[], char **env)
 {
 	Shell sh;
+
+	int fd = STDIN_FILENO;
+
+	if (argc == 2)
+	{
+		fd = open(argv[1], O_RDONLY);
+		if (fd == -1)
+		{
+			if (errno == EACCES)
+			{
+				exit(126);
+			}
+			if (errno == ENOENT)
+			{
+				exit(127);
+			}
+			return (EXIT_FAILURE);
+		}
+	}
 
 	init_shell(&sh, argc, argv, env);
 

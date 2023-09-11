@@ -15,6 +15,8 @@
 
 #define MAX_COMMAND_LENGTH 100
 
+extern char **environ;
+
 /* Define the shell struct */
 typedef struct {
 	int argc;
@@ -43,6 +45,8 @@ extern char **environ;
 char **_splitstr(char *cmd);
 char *_getcmd(char *cmd);
 void _cmdcheck(char *command);
-char *_getenv(const char *name);
+char *__getenv(const char *name);
 
+/* get_env */
+char *_getenv(const char *name);
 #endif
