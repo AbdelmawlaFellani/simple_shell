@@ -1,15 +1,21 @@
 #include "main.h"
 
 /**
- * free_string_array - Frees a double pointer
+ * free_2d_array - Frees a double pointer
  * @ptr: The double pointer to be freed
  */
-void free_string_array(char ***ptr)
+void free_2d_array(char **ptr)
 {
 	int i;
 
-	for (i = 0; (*ptr)[i]; i++)
-		free((*ptr)[i]);
+	if (!ptr)
+		return;
+
+	for (i = 0; ptr[i]; i++)
+	{
+		free(ptr[i]);
+		ptr[i] = NULL;
+	}
 	free(*ptr);
 	*ptr = NULL;
 }

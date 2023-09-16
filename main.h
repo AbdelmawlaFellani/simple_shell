@@ -14,7 +14,7 @@
 #include <errno.h>
 
 #define MAX_COMMAND_LENGTH 100
-
+#define MAX_ARGS 10
 extern char **environ;
 
 /* Define the shell struct */
@@ -23,23 +23,22 @@ typedef struct {
 	char **args;
 	char **argv;
 	char **env_cpy;
-	char *input;
 	int status;
 	int run;
 	int interactive;
 	char *command;
-	size_t command_size;
 } Shell;
 
 
 /* input.h */
-ssize_t read_command(Shell *shell);
+size_t read_command(Shell *shell);
 void print_prompt();
-
+void parse_command(Shell *sh, char *cmd);
+void process_variables(Shell *shell, char **args);
 /* execution.h */
 void execute_command(Shell *shell);
 /* utils */
-void free_string_array(char ***ptr);
+void free_2d_array(char **ptr);
 
 extern char **environ;
 char **_splitstr(char *cmd);
@@ -47,6 +46,8 @@ char *_getcmd(char *cmd);
 void _cmdcheck(char *command);
 char *__getenv(const char *name);
 
-/* get_env */
-char *_getenv(const char *name);
+/* string_fn */
+int _strcmp(const char *s1, const char *s2, size_t n);
+/* status_handler */
+int status_handler(Shell *sh, int status);
 #endif
