@@ -23,12 +23,10 @@ char **_splitstr(char *cmd)
 		if (tokens == NULL)
 		{
 			perror("Memory allocation error");
-			free_2d_array(tokens);
 			exit(EXIT_FAILURE);
 		}
 
 		tokens[token_count] = strdup(token);
-		free(token);
 
 		if (tokens[token_count] == NULL)
 		{
@@ -44,10 +42,10 @@ char **_splitstr(char *cmd)
 	if (tokens == NULL)
 	{
 		perror("Memory allocation error");
-		free_2d_array(tokens);
 		exit(EXIT_FAILURE);
 	}
 	tokens[token_count] = NULL;
+
 	return (tokens);
 }
 /**
@@ -94,7 +92,7 @@ void _cmdcheck(char *command)
  */
 char *_getcmd(char *cmd)
 {
-	char *path = __getenv("PATH");
+	char *path = _getenv("PATH");
 	char *token, *command;
 	struct stat st;
 
@@ -102,22 +100,13 @@ char *_getcmd(char *cmd)
 	while (token)
 	{
 		command =  malloc(strlen(token) + strlen(cmd) + 2);
-		if (!command)
-		{
-			perror("Memory allocation error");
-			exit(EXIT_FAILURE);
-		}
 		strcpy(command, token);
 		strcat(command, "/");
 		strcat(command, cmd);
 		if (stat(command, &st) == 0)
-		{
-			free(path);
 			return (command);
-		}
 		free(command);
 		token = strtok(NULL, ":");
 	}
-	free(path);
 	return (NULL);
 }
