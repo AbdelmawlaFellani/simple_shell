@@ -33,13 +33,15 @@ char *find_full_cmd_path(const char *command, const char *path_env)
 		{
 			return (full_path);
 		}
-		if (access(full_path, X_OK) == -1)
+		/*
+		else if (access(full_path, X_OK) == -1)
 		{
 			if (errno == EACCES)
 				exit(126);
 			if (errno == ENOENT)
 				exit(127);
 		} 
+		*/
 		free(full_path);
 		token = strtok(NULL, ":");
 	}
@@ -66,19 +68,17 @@ void execute_command(Shell *shell)
 	}
 	else
 	{
-		full_path = find_full_cmd_path(shell->args[0], _getenv("PATH"));
+		full_path = find_full_cmd_path(shell->args[0], __getenv("PATH"));
 		if (full_path == NULL)
 		{
-			fprintf(stderr, "%s: %s: command not found\n",
-					shell->argv[0], shell->args[0]);
-			exit(EXIT_FAILURE);
+			free(full_path);
+			exit(127);
 		}
 	}
 	if (execve(full_path, shell->args, shell->env_cpy) == -1)
 	{
 		fprintf(stderr, "%s: %d: %s: %s", shell->argv[0], 1,
 				shell->args[0], "not found\n");
-		exit(EXIT_FAILURE);
+		exit(127);
 	}
-	free(full_path);
 }

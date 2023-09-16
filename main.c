@@ -16,9 +16,7 @@ void init_shell(Shell *shell, int argc, char **argv, char **env)
 	shell->argc = argc;
 	shell->argv = argv;
 	shell->command = NULL;
-	shell->command_size = 0;
 	shell->status = 0;
-	shell->input = NULL;
 	shell->env_cpy = env;
 
 	shell->interactive = isatty(STDIN_FILENO) && argc == 1;
@@ -35,6 +33,7 @@ void run_shell(Shell *shell)
 {
 	ssize_t nread;
 	pid_t pid;
+	int status;
 
 	while (shell->run)
 	{
@@ -44,6 +43,8 @@ void run_shell(Shell *shell)
 		{
 			break;
 		}
+
+		parse_command(shell, shell->command);
 		pid = fork();
 
 		if (pid == -1)
@@ -63,7 +64,8 @@ void run_shell(Shell *shell)
 		}
 		else
 		{
-			waitpid(pid, &shell->status, 0);
+			waitpid(pid, &status, 0);
+			shell->status = WEXITSTATUS(status);
 		}
 	}
 }
@@ -79,7 +81,10 @@ void free_shell(Shell *shell)
 		free(shell->command);
 
 	if (shell->args)
-		free_string_array(&shell->args);
+		free_2d_array(shell->args);
+
+	if (shell->env_cpy)
+		free_2d_array(shell->env_cpy);
 }
 /**
  * main - entry point
@@ -93,25 +98,6 @@ void free_shell(Shell *shell)
 int main(int argc, char *argv[], char **env)
 {
 	Shell sh;
-
-	int fd = STDIN_FILENO;
-
-	if (argc == 2)
-	{
-		fd = open(argv[1], O_RDONLY);
-		if (fd == -1)
-		{
-			if (errno == EACCES)
-			{
-				exit(126);
-			}
-			if (errno == ENOENT)
-			{
-				exit(127);
-			}
-			return (EXIT_FAILURE);
-		}
-	}
 
 	init_shell(&sh, argc, argv, env);
 
