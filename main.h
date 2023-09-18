@@ -1,53 +1,62 @@
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef MAIN_H
+#define MAIN_H
 
-#include <stdio.h>
-#include <string.h>
-#include <stddef.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
+#include "sys/stat.h"
+#include "sys/types.h"
 #include <sys/wait.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <errno.h>
 
-#define MAX_COMMAND_LENGTH 100
+#define MAX_CMDS 10
 #define MAX_ARGS 10
-extern char **environ;
+#define BUFFER_SIZE 2048
+#define ALIASES_SIZE 100
+#define SH_NAME "./hsh"
 
-/* Define the shell struct */
-typedef struct {
+typedef unsigned int uint;
+typedef struct shell shell;
+
+struct shell
+{
 	int argc;
-	char **args;
 	char **argv;
-	char **env_cpy;
+	char **input;
+	char **args;
+	char **environ_copy;
+	int num_builtins;
+	int cmd_count;
 	int status;
 	int run;
 	int interactive;
-	char *command;
-} Shell;
-
-
-/* input.h */
-size_t read_command(Shell *shell);
-void print_prompt();
-void parse_command(Shell *sh, char *cmd);
-void process_variables(Shell *shell, char **args);
-/* execution.h */
-void execute_command(Shell *shell);
-/* utils */
-void free_2d_array(char **ptr);
-
+	command *builtins;
+	alias aliases[ALIASES_SIZE];
+};
+typedef struct command
+{
+	char *name;
+	void (*func)(shell *);
+} command;
+typedef struct alias
+{
+	char *name;
+	char *value;
+} alias;
 extern char **environ;
-char **_splitstr(char *cmd);
-char *_getcmd(char *cmd);
-void _cmdcheck(char *command);
-char *__getenv(const char *name);
 
-/* string_fn */
-int _strcmp(const char *s1, const char *s2, size_t n);
-/* status_handler */
-int status_handler(Shell *sh, int status);
+/* main */
+void init_shell(shell *sh, int argc, char **argv);
+void free_shell(shell *sh);
+
+/* input */
+void read_input(shell *sh);
+void parse_command(shell *sh, char *cmd);
+
+/* cmd_exec */
+void execute_command(shell *sh, int *curr_line);
+void process_command(shell *sh);
+
+/* cmd_find */
+char *find_command(char *command);
+
 #endif
