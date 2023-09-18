@@ -18,7 +18,7 @@ typedef struct shell shell;
 /**
  * struct command - Struct contains builtins command name and function pointer
  * @name: Pointer to the command name string
- * @func: Pointer to the function associated with the command
+ * @process: Pointer to the process associated with the command
  */
 typedef struct
 {
