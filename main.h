@@ -11,10 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_CMDS 10
 #define MAX_ARGS 10
-#define BUFFER_SIZE 2048
-#define ALIASES_SIZE 100
 #define SH_NAME "./hsh"
 typedef struct shell shell;
 
