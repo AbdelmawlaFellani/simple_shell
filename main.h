@@ -26,7 +26,7 @@ typedef struct shell shell;
 typedef struct
 {
 	char *name;
-	void (*func)(shell *);
+	void (*process)(shell *);
 } command;
 
 /* Define the shell struct */
@@ -36,8 +36,7 @@ struct shell
 	char **argv;
 	char **input;
 	char **args;
-	char **env_cpy;
-	int num_builtins;
+	int builtins_count;
 	int cmd_count;
 	int status;
 	int run;
@@ -70,7 +69,6 @@ void cmd_exit(shell *sh);
 /* sys_utils */
 ssize_t _getline(char **lineptr, size_t *n, int fd);
 char *_getenv(const char *name);
-char **copy_environ(void);
 
 /* str_utils */
 unsigned int _strlen(char *s);

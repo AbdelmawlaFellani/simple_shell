@@ -16,8 +16,8 @@ void init_shell(shell *sh, int argc, char **argv)
 	sh->argc = argc;
 	sh->argv = argv;
 
-	while (builtins[sh->num_builtins].name)
-		sh->num_builtins++;
+	while (builtins[sh->builtins_count].name)
+		sh->builtins_count++;
 
 	sh->interactive = isatty(STDIN_FILENO) && argc == 1;
 }
@@ -53,8 +53,6 @@ void free_shell(shell *sh)
 	if (sh->args)
 		free(sh->args);
 
-	if (sh->env_cpy)
-		free_2d(&sh->env_cpy);
 }
 
 /**

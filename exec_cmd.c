@@ -9,11 +9,11 @@ int builtin_cmd(shell *sh)
 {
 	int i;
 
-	for (i = 0; i < sh->num_builtins; i++)
+	for (i = 0; i < sh->builtins_count; i++)
 	{
 		if (sh->args[0] && _strcmp(sh->args[0], sh->builtins[i].name, -1) == 0)
 		{
-			sh->builtins[i].func(sh);
+			sh->builtins[i].process(sh);
 			break;
 		}
 	}
@@ -27,7 +27,7 @@ int builtin_cmd(shell *sh)
 void external_cmd(shell *sh, int *curr_line)
 {
 	pid_t pid;
-	int ret, wstatus;
+	int ex, wstatus;
 	char *full_path = NULL;
 
 	if (sh->args[0][0] == '/' || sh->args[0][0] == '.')
@@ -40,10 +40,10 @@ void external_cmd(shell *sh, int *curr_line)
 		pid = fork();
 		if (pid == 0)
 		{
-			ret = execve(full_path, sh->args, environ);
-			if (ret == -1)
+			ex = execve(full_path, sh->args, environ);
+			if (ex == -1)
 				perror(sh->args[0]);
-			_exit(ret);
+			_exit(ex);
 		}
 		else
 		{
@@ -74,7 +74,7 @@ void execute_cmd(shell *sh, int *curr_line)
 	int n;
 
 	n = builtin_cmd(sh);
-	if (n == sh->num_builtins)
+	if (n == sh->builtins_count)
 	{
 		external_cmd(sh, curr_line);
 	}
@@ -91,7 +91,7 @@ void execute_cmd(shell *sh, int *curr_line)
 void process_cmd(shell *sh)
 {
 	int i, curr_line = 1;
-	char *oprs = ";|&", *saveptr, *cmd;
+	char *op = ";|&", *ptr, *cmd;
 
 	read_input(sh);
 	if (!sh->input)
@@ -99,7 +99,7 @@ void process_cmd(shell *sh)
 
 	for (i = 0; i < sh->cmd_count; i++)
 	{
-		cmd = strtok_r(sh->input[i], oprs, &saveptr);
+		cmd = strtok_r(sh->input[i], op, &ptr);
 		while (cmd != NULL)
 		{
 
@@ -108,13 +108,13 @@ void process_cmd(shell *sh)
 			if (sh->args[0] && sh->args[0][0])
 				execute_cmd(sh, &curr_line);
 
-			if (saveptr[0] == '|' && sh->status == 0)
+			if (ptr[0] == '|' && sh->status == 0)
 				break;
 
-			if (saveptr[0] == '&' && sh->status != 0)
+			if (ptr[0] == '&' && sh->status != 0)
 				break;
 
-			cmd = strtok_r(NULL, oprs, &saveptr);
+			cmd = strtok_r(NULL, op, &ptr);
 		}
 	}
 
