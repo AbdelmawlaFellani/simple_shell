@@ -83,7 +83,7 @@ void read_input(shell *sh)
 		if (fd == -1)
 		{
 			fprintf(stderr, "%s: 0: Can't open %s\n",
-					SH_NAME, sh->argv[1]);
+					sh->argv[0], sh->argv[1]);
 			sh->status = 127;
 			sh->run = 0;
 			return;

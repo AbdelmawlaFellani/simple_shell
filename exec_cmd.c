@@ -60,7 +60,7 @@ void external_cmd(shell *sh, int *curr_line)
 			fprintf(stderr, "%s: command not found\n", sh->args[0]);
 		else
 			fprintf(stderr, "%s: %d: %s: not found\n",
-					SH_NAME, *curr_line, sh->args[0]);
+					sh->argv[0], *curr_line, sh->args[0]);
 		sh->status = 127;
 	}
 }
@@ -71,18 +71,11 @@ void external_cmd(shell *sh, int *curr_line)
  */
 void execute_cmd(shell *sh, int *curr_line)
 {
-	int j;
-	/* char *alias_value; */
+	int n;
 
-	j = builtin_cmd(sh);
-	if (j == sh->num_builtins)
+	n = builtin_cmd(sh);
+	if (n == sh->num_builtins)
 	{
-		/**
-		 * alias_value = get_alias_value(sh, sh->args[0]);
-		 * if (alias_value)
-		 * sh->args[0] = alias_value;
-		 */
-
 		external_cmd(sh, curr_line);
 	}
 	(*curr_line)++;

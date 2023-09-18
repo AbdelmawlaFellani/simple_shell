@@ -10,6 +10,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
+
 #define MAX_CMDS 10
 #define MAX_ARGS 10
 #define BUFFER_SIZE 2048
@@ -61,7 +62,10 @@ void process_cmd(shell *sh);
 /* cmd_find */
 char *find_cmd(char *command);
 
+/* builtins */
 command *get_builtins(void);
+void cmd_env(shell *sh);
+void cmd_exit(shell *sh);
 
 /* sys_utils */
 ssize_t _getline(char **lineptr, size_t *n, int fd);
@@ -73,4 +77,6 @@ unsigned int _strlen(char *s);
 int _strcmp(const char *s1, const char *s2, size_t n);
 char *_strdup(const char *s);
 void free_2d(char ***ptr);
+
+int is_number(char *str);
 #endif
