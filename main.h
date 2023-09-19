@@ -12,21 +12,33 @@
 #include <string.h>
 
 #define MAX_ARGS 10
-#define SH_NAME "./hsh"
 typedef struct shell shell;
 
 /**
  * struct command - Struct contains builtins command name and function pointer
  * @name: Pointer to the command name string
- * @process: Pointer to the process associated with the command
+ * @process: Paointer to the process function associated with the command
  */
-typedef struct
+typedef struct command
 {
 	char *name;
 	void (*process)(shell *);
 } command;
 
-/* Define the shell struct */
+/**
+ * struct shell - Struct representing the shell
+ *
+ * @argc: Number of command-line arguments
+ * @argv: Array of command-line arguments
+ * @input: Array of input lines
+ * @args: Array of command arguments
+ * @builtins_count: Number of built-in commands
+ * @cmd_count: Number of executed commands
+ * @status: Exit status of the shell
+ * @run: Flag indicating if the shell is running
+ * @interactive: Flag indicating if the shell is in interactive mode
+ * @builtins: Array of built-in commands
+ */
 struct shell
 {
 	int argc;
