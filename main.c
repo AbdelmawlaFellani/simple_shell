@@ -1,52 +1,75 @@
 #include "main.h"
-#define MAX_COMMAND_LENGTH 100
-/**
- * main - Entry Point
- *
- * @argc: Argument counter
- * @argv: Argument vector
- * @env: environment variables
- * Return: 0 (Success)
- */
-int main(int argc, char *argv[], char *env[])
-{
-	char *command = NULL;
-	size_t command_size = 0;
-	ssize_t nread;
-	int status;
-	pid_t pid;
 
-	(void) argc;
-	while (1)
+/**
+ * init_shell - Initialize the shell struct
+ * @sh: A pointer to the Shell struct to be initialized
+ * @argc: argument counter.
+ * @argv: An array of command arguments.
+ * Return: void
+ */
+void init_shell(shell *sh, int argc, char **argv)
+{
+	command *builtins = get_builtins();
+
+	sh->builtins = builtins;
+	sh->run = 1;
+	sh->argc = argc;
+	sh->argv = argv;
+
+	while (builtins[sh->builtins_count].name)
+		sh->builtins_count++;
+
+	sh->interactive = isatty(STDIN_FILENO) && argc == 1;
+}
+
+/**
+ * run_shell - Run the main shell loop
+ * @sh: A pointer to the Shell struct representing the shell.
+ * Return: void
+ */
+void run_shell(shell *sh)
+{
+	while (sh->run)
 	{
-		write(STDOUT_FILENO, "$ ", 2);
-		nread = getline(&command, &command_size, stdin);
-		if (nread == -1)
+		if (sh->interactive)
 		{
-			perror("getline");
-			break;
+			write(STDOUT_FILENO, "$ ", 2);
 		}
-		else if (nread == 1)
-			continue;
-		command[nread - 1] = '\0';
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			continue;
-		}
-		else if (pid == 0)
-		{
-			argv[0] = command;
-			if (execve(argv[0], argv, env) == -1)
-			{
-				fprintf(stderr, "./shell: No such file or directory\n");
-				exit(EXIT_FAILURE);
-			}
-		}
-		else
-			waitpid(pid, &status, 0);
+		process_cmd(sh);
 	}
-	free(command);
-	return (0);
+}
+
+/**
+ * free_shell - Free memory associated with a Shell struct.
+ * @sh: A pointer to the Shell struct to be freed.
+ * Return: void
+ */
+void free_shell(shell *sh)
+{
+
+	if (sh->input)
+		free_2d(&sh->input);
+
+	if (sh->args)
+		free(sh->args);
+
+}
+
+/**
+ * main - Entry point
+ * @argc: The number of arguments passed to the program
+ * @argv: An array[string] of the arguments passed to the program
+ * Return: The status code of the last command executed
+ */
+int main(int argc, char **argv)
+{
+	shell sh = {0};
+
+	init_shell(&sh, argc, argv);
+
+	run_shell(&sh);
+
+	free_shell(&sh);
+
+	return (sh.status);
 }
